@@ -55,6 +55,11 @@
             s4() + '-' + s4() + s4() + s4();
     }
 
+    var KEYCODES = {
+        ENTER: 13,
+        ESCAPE: 27,
+    }
+
     /**
      * Datastore.
      */
@@ -103,13 +108,13 @@
             });
 
             this.$app.on("keyup", ".new-todo", function(e){
-                if (e.key === "Enter" && this.value !== "") {
+                if (e.keyCode === KEYCODES.ENTER && this.value !== "") {
                     var newTodoName = this.value;
                     self.data.input = "";
                     this.value = "";
                     self.addTodo(newTodoName);
                 };
-                if (e.key === "Escape") {
+                if (e.keyCode === KEYCODES.ESCAPE) {
                     this.value = "";
                 }
                 self.data.input = this.value;
