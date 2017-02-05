@@ -119,9 +119,6 @@
                 var todo = self.getTodoFromElement(this);
                 if (todo) {
                     self.removeTodos([todo]);
-                } else {
-                    console.error("Can't find todo for element");
-                    console.error(this);
                 }
                 e.preventDefault();
             });
@@ -169,17 +166,24 @@
             this.render();
         },
         
+        getTodoById: function(uuid) {
+            var results = this.data.todos.filter(function(item) {
+                return item.uuid === uuid;
+            });
+            if (!results.length) {
+                console.error(`Can't find todo for ${uuid}`);                
+            }
+            return results[0];
+        },
+
         /**
          * Given any element, climb the tree
          * until you find the todo's id, and look
          * it up in the data.
          */
         getTodoFromElement: function(el) {
-            var uuid = $(el).closest("[data-uuid]").data().uuid;
-            var results = this.data.todos.filter(function(item) {
-                return item.uuid === uuid;
-            });
-            return results[0];
+            var uuid = $(el).closest("[data-uuid]").attr("data-uuid");
+            return this.getTodoById(uuid);
         },
 
         addTodo: function(name) {
