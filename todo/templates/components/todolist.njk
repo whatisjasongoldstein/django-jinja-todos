@@ -20,13 +20,13 @@
         <!-- Remove this if you don't implement routing -->
         <ul class="filters">
             <li>
-                <a class="selected" href="#/">All</a>
+                <a data-filter="all" {% if filter == "all" or not filter %}class="selected"{% endif %} href="#/">All</a>
             </li>
             <li>
-                <a href="#/active">Active</a>
+                <a {% if filter == "active" %}class="selected"{% endif %} data-filter="active" href="#/active">Active</a>
             </li>
             <li>
-                <a href="#/completed">Completed</a>
+                <a {% if filter == "completed" %}class="selected"{% endif %} data-filter="completed" href="#/completed">Completed</a>
             </li>
         </ul>
         <!-- Hidden if no completed items are left ↓ -->

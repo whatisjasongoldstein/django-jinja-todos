@@ -1,3 +1,4 @@
+import uuid
 import marshmallow
 from django.conf import settings
 from django.db import models
@@ -11,6 +12,7 @@ class ItemQuerySet(models.QuerySet):
 
 
 class Item(models.Model):
+    uuid = models.UUIDField(default=uuid.uuid4, editable=False)
     user = models.ForeignKey(settings.AUTH_USER_MODEL)
     name = models.CharField(max_length=255)
     complete = models.BooleanField(default=False)
@@ -22,4 +24,4 @@ class Item(models.Model):
 
 class ItemSchema(marshmallow.Schema):
     class Meta:
-        fields = ("id", "name", "complete", )
+        fields = ("uuid", "name", "complete", )

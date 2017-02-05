@@ -27,8 +27,8 @@ def endpoint(request):
 
     # Delete
     if request.POST.get("delete"):
-        id = request.POST.get("delete") 
-        Item.objects.filter(user=request.user, id=id).delete()
+        uuids = json.loads(request.POST.get("delete"))
+        Item.objects.filter(user=request.user, uuid__in=uuids).delete()
         return JsonResponse({"status": "Gone!"})
     
     item_schema = ItemSchema()
@@ -37,10 +37,10 @@ def endpoint(request):
     if errors:
         return JsonResponse({'errors': errors})
     try:
-        item = Item.objects.get(id=data["id"])
+        item = Item.objects.get(uuid=data["uuid"])
     except Item.DoesNotExist:
         item = Item.objects.create(
-            id=data["id"],
+            uuid=data["uuid"],
             user=request.user,
             name=data["name"],
             complete=data["complete"])

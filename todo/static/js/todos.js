@@ -45,6 +45,16 @@
         });
     };
 
+    function uuid() {
+        function s4() {
+            return Math.floor((1 + Math.random()) * 0x10000)
+                .toString(16)
+                .substring(1);
+        }
+        return s4() + s4() + '-' + s4() + '-' + s4() + '-' +
+            s4() + '-' + s4() + s4() + s4();
+    }
+
     /**
      * Datastore.
      */
@@ -52,8 +62,11 @@
         init: function() {
             this.data = JSON.parse(document.getElementById("data").innerText);
             this.$app = $(".a-todo-app");
-            this.setActiveFilter();
             this.bindEvents();
+
+            // Since hashes aren't sent to the server, 
+            // this is only done in js. It will trigger a render.
+            this.setFilter();
         },
         bindEvents: function() {
 
@@ -104,14 +117,24 @@
 
             this.$app.on("click", ".destroy", function(e){
                 var todo = self.getTodoFromElement(this);
-                self.removeTodo(todo);
+                if (todo) {
+                    self.removeTodos([todo]);
+                } else {
+                    console.error("Can't find todo for element");
+                    console.error(this);
+                }
                 e.preventDefault();
             });
 
-            $(window).on("hashchange", function(){
-                self.setActiveFilter();
-                self.render();
+            this.$app.on("click", ".clear-completed", function(e){
+                var todos = self.filters.completed(self.data.todos);
+                if (todos.length) {
+                    self.removeTodos(todos);
+                }
+                e.preventDefault();
             });
+
+            $(window).on("hashchange", self.setFilter.bind(self));
         },
 
         /**
@@ -123,12 +146,12 @@
                 return todos;
             },
             completed: function(todos) {
-                return $.grep(todos, function(item){
+                return todos.filter(function(item){
                     return item.complete;
                 });
             },
             active: function(todos) {
-                return $.grep(todos, function(item){
+                return todos.filter(function(item){
                     return !item.complete;
                 });
             },
@@ -140,9 +163,10 @@
          *
          * This determines the subset of items that render.
          */
-        setActiveFilter: function() {
+        setFilter: function() {
             var key = window.location.hash.split("/")[1];
             this.activeFilter = this.filters[key] || this.filters.all;
+            this.render();
         },
         
         /**
@@ -151,16 +175,16 @@
          * it up in the data.
          */
         getTodoFromElement: function(el) {
-            var id = $(el).closest("[data-id]").data().id;
-            var results = $.grep(this.data.todos, function(item) {
-                return item.id === id;
+            var uuid = $(el).closest("[data-uuid]").data().uuid;
+            var results = this.data.todos.filter(function(item) {
+                return item.uuid === uuid;
             });
             return results[0];
         },
 
         addTodo: function(name) {
             var todo = {
-                id: new Date().getTime(),
+                uuid: uuid(),
                 name: name,
                 complete: false,
             }
@@ -169,14 +193,16 @@
             this.render()
         },
 
-        removeTodo: function(todo) {
-            var id = todo.id;
-            this.data.todos = $.grep(this.data.todos, function(item) {
-                return item.id !== id;
+        removeTodos: function(todos) {
+            var uuids = todos.map(function(todo){
+                return todo.uuid
+            });
+            this.data.todos = this.data.todos.filter(function(item) {
+                return (uuids.indexOf(item.uuid) === -1);
             });
             this.render();
             $.post("/endpoint/", {
-                delete: todo.id
+                delete: JSON.stringify(uuids)
             });
         },
 
@@ -189,6 +215,7 @@
         render: function() {
             var html = nunjucks.render("components/todolist.njk", {
                 items: this.activeFilter(this.data.todos),
+                filter: this.activeFilter.name,
                 input: this.data.input || "",
                 count: this.filters.active(this.data.todos).length,
             });
