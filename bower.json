@@ -1,0 +1,20 @@
+{
+  "name": "todoapp",
+  "version": "0.0.0",
+  "authors": [
+    "Jason Goldstein <jason@betheshoe.com>"
+  ],
+  "license": "MIT",
+  "private": true,
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "jquery": "3.1.1",
+    "nunjucks": "3.0.0"
+  }
+}

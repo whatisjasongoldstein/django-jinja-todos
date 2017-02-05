@@ -1,0 +1,15 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <title>Template • TodoMVC</title>
+        <link rel="stylesheet" href="{{ static("index.css") }}">
+    </head>
+    <body>
+        {% block content %}{% endblock %}
+        <script type="data/json" id="data">{{ data|safe }}</script>
+        <!-- Scripts here. Don't remove ↓ -->
+        <script src="{{ static("app.js") }}"></script>
+    </body>
+</html>
