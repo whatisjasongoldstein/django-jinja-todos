@@ -12,9 +12,10 @@ gulp.task("css", () => {
         .pipe(gulp.dest(outdir));
 })
 
-gulp.task("js", ["templates"], () => {
+gulp.task("js", () => {
   gulp.src([
     'bower_components/jquery/dist/jquery.min.js',
+    'bower_components/morphdom/dist/morphdom-umd.min.js',
     'assets/templates.js',
     'bower_components/nunjucks/browser/nunjucks-slim.min.js',
     'todo/static/js/todos.js',

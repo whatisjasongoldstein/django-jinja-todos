@@ -46,7 +46,9 @@ var colno = null;
 var output = "";
 try {
 var parentTemplate = null;
-output += "<section class=\"todoapp\">\n    <header class=\"header\">\n        <h1>todos</h1>\n        <input class=\"new-todo\" placeholder=\"What needs to be done?\" autofocus>\n    </header>\n    <!-- This section should be hidden by default and shown when there are todos -->\n    <section class=\"main\">\n        <input class=\"toggle-all\" type=\"checkbox\">\n        <label for=\"toggle-all\">Mark all as complete</label>\n        <ul class=\"todo-list\">\n            ";
+output += "<section class=\"todoapp\">\n    <header class=\"header\">\n        <h1>todos</h1>\n        <input class=\"new-todo\" placeholder=\"What needs to be done?\" autofocus value=\"";
+output += runtime.suppressValue(runtime.contextOrFrameLookup(context, frame, "input") || "", env.opts.autoescape);
+output += "\">\n    </header>\n    <!-- This section should be hidden by default and shown when there are todos -->\n    <section class=\"main\">\n        <input class=\"toggle-all\" type=\"checkbox\">\n        <label for=\"toggle-all\">Mark all as complete</label>\n        <ul class=\"todo-list\">\n            ";
 frame = frame.push();
 var t_3 = runtime.contextOrFrameLookup(context, frame, "items");
 if(t_3) {var t_2 = t_3.length;
@@ -85,7 +87,7 @@ output += "\n            ";
 }
 }
 frame = frame.pop();
-output += "\n        </ul>\n    </section>\n    <!-- This footer should hidden by default and shown when there are todos -->\n    <footer class=\"footer\">\n        <!-- This should be `0 items left` by default -->\n        <span class=\"todo-count\"><strong>0</strong> item left</span>\n        <!-- Remove this if you don't implement routing -->\n        <ul class=\"filters\">\n            <li>\n                <a class=\"selected\" href=\"#/\">All</a>\n            </li>\n            <li>\n                <a href=\"#/active\">Active</a>\n            </li>\n            <li>\n                <a href=\"#/completed\">Completed</a>\n            </li>\n        </ul>\n        <!-- Hidden if no completed items are left ↓ -->\n        <button class=\"clear-completed\">Clear completed</button>\n    </footer>\n</section>\n<footer class=\"info\">\n    <p>Double-click to edit a todo</p>\n    <!-- Remove the below line ↓ -->\n    <p>Template by <a href=\"http://sindresorhus.com\">Sindre Sorhus</a></p>\n    <!-- Change this out with your name and url ↓ -->\n    <p>Created by <a href=\"http://todomvc.com\">you</a></p>\n    <p>Part of <a href=\"http://todomvc.com\">TodoMVC</a></p>\n</footer>";
+output += "\n        </ul>\n    </section>\n    <!-- This footer should hidden by default and shown when there are todos -->\n    <footer class=\"footer\">\n        <!-- This should be `0 items left` by default -->\n        <span class=\"todo-count\"><strong>0</strong> item left</span>\n        <!-- Remove this if you don't implement routing -->\n        <ul class=\"filters\">\n            <li>\n                <a class=\"selected\" href=\"#/\">All</a>\n            </li>\n            <li>\n                <a href=\"#/active\">Active</a>\n            </li>\n            <li>\n                <a href=\"#/completed\">Completed</a>\n            </li>\n        </ul>\n        <!-- Hidden if no completed items are left ↓ -->\n        <button class=\"clear-completed\">Clear completed</button>\n    </footer>\n</section>";
 if(parentTemplate) {
 parentTemplate.rootRenderFunc(env, context, frame, runtime, cb);
 } else {
