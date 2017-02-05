@@ -12,8 +12,8 @@ gulp.task("css", () => {
         .pipe(gulp.dest(outdir));
 })
 
-gulp.task("js", () => {
-  gulp.src([
+gulp.task("js", ["templates"], () => {
+  return gulp.src([
     'bower_components/jquery/dist/jquery.min.js',
     'bower_components/morphdom/dist/morphdom-umd.min.js',
     'assets/templates.js',
@@ -25,7 +25,7 @@ gulp.task("js", () => {
 })
 
 gulp.task("templates", () => {
-    gulp.src('todo/templates/components/*.njk')
+    return gulp.src('todo/templates/components/*.njk')
         .pipe(nunjucks.precompile({
             name: function(f) {
                 return `components\/${f.relative}`;
