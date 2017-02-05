@@ -14,8 +14,9 @@ Let's start small, TODOMVC style.
 - [ ] Deserializing/saving baked into the model
 - [ ] Reasonable approach to API's
 - [ ] Make code not garbage
-- [ ] Minimize boilerplate
+- [ ] Minimize (and document) boilerplate
 - [ ] A second app scope?
+- [ ] A yeoman or cookiecutter starter kit
 
 ## Notes
 
