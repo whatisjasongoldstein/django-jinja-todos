@@ -55,7 +55,8 @@
             });
 
             this.$app.on("keyup", ".new-todo", function(e){
-                if (e.key === "Enter") {
+                if (e.key === "Enter" && this.value !== "") {
+                    self.data.input = "";
                     self.addTodo(this.value);
                 };
                 if (e.key === "Escape") {
@@ -95,8 +96,9 @@
         },
 
         removeTodo: function(todo) {
+            var id = todo.id;
             this.data.todos = $.grep(this.data.todos, function(item) {
-                return item.id !== todo.id;
+                return item.id !== id;
             });
             this.render()
             console.log("delete from an api");
