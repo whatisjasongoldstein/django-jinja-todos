@@ -1,4 +1,4 @@
-from rest_framework import serializers
+import marshmallow
 from django.conf import settings
 from django.db import models
 
@@ -6,7 +6,8 @@ from django.db import models
 class ItemQuerySet(models.QuerySet):
 
     def serialized(self):
-        return ItemSerializer(self.filter(), many=True).data
+        item_schema = ItemSchema()
+        return item_schema.dump(self.filter(), many=True).data
 
 
 class Item(models.Model):
@@ -19,7 +20,6 @@ class Item(models.Model):
         return self.name or "New item"
 
 
-class ItemSerializer(serializers.ModelSerializer):
+class ItemSchema(marshmallow.Schema):
     class Meta:
-        model = Item
-        fields = ('id', 'name', 'complete', )
+        fields = ("id", "name", "complete", )

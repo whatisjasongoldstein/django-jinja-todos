@@ -1,3 +1,40 @@
+/**
+ * csrf token setup for ajax request.
+ * @see https://docs.djangoproject.com/en/1.10/ref/csrf/#ajax
+ */
+(function(window, $){
+    function getCookie(name) {
+        var cookieValue = null;
+        if (document.cookie && document.cookie !== '') {
+            var cookies = document.cookie.split(';');
+            for (var i = 0; i < cookies.length; i++) {
+                var cookie = jQuery.trim(cookies[i]);
+                // Does this cookie string begin with the name we want?
+                if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    break;
+                }
+            }
+        }
+        return cookieValue;
+    }
+    var csrftoken = getCookie('csrftoken');    
+
+    function csrfSafeMethod(method) {
+        // these HTTP methods do not require CSRF protection
+        return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
+    }
+    $.ajaxSetup({
+        beforeSend: function(xhr, settings) {
+            if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
+                xhr.setRequestHeader("X-CSRFToken", csrftoken);
+            }
+        }
+    });
+
+})(window, jQuery);
+
+
 (function(window, document, $){
 
     function lazyRender(el, html) {
@@ -7,9 +44,6 @@
             morphdom(el, cloneEl);
         });
     };
-
-    var ENTER_KEY = 13;
-    var ESCAPE_KEY = 27;
 
     /**
      * Datastore.
@@ -56,8 +90,10 @@
 
             this.$app.on("keyup", ".new-todo", function(e){
                 if (e.key === "Enter" && this.value !== "") {
+                    var newTodoName = this.value;
                     self.data.input = "";
-                    self.addTodo(this.value);
+                    this.value = "";
+                    self.addTodo(newTodoName);
                 };
                 if (e.key === "Escape") {
                     this.value = "";
@@ -68,6 +104,7 @@
             this.$app.on("click", ".destroy", function(e){
                 var todo = self.getTodoFromElement(this);
                 self.removeTodo(todo);
+                e.preventDefault();
             });
         },
 
@@ -100,12 +137,16 @@
             this.data.todos = $.grep(this.data.todos, function(item) {
                 return item.id !== id;
             });
-            this.render()
-            console.log("delete from an api");
+            this.render();
+            $.post("/endpoint/", {
+                delete: todo.id
+            });
         },
 
         saveTodo: function(todo) {
-            console.log("Saved to an api!");
+            $.post("/endpoint/", {
+                todo: JSON.stringify(todo)
+            });
         },
 
         render: function() {

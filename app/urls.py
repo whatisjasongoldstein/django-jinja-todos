@@ -20,5 +20,6 @@ from todo import views
 
 urlpatterns = [
     url(r'^$', views.todos, name="example"),
+    url(r'^endpoint/$', views.endpoint, name="endpoint"),
     url(r'^admin/', admin.site.urls),
 ]
