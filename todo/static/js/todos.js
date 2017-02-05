@@ -52,6 +52,7 @@
         init: function() {
             this.data = JSON.parse(document.getElementById("data").innerText);
             this.$app = $(".a-todo-app");
+            this.setActiveFilter();
             this.bindEvents();
         },
         bindEvents: function() {
@@ -106,8 +107,44 @@
                 self.removeTodo(todo);
                 e.preventDefault();
             });
+
+            $(window).on("hashchange", function(){
+                self.setActiveFilter();
+                self.render();
+            });
         },
 
+        /**
+         * Functions that filter todos before
+         * being rendered.
+         */
+        filters: {
+            all: function(todos) {
+                return todos;
+            },
+            completed: function(todos) {
+                return $.grep(todos, function(item){
+                    return item.complete;
+                });
+            },
+            active: function(todos) {
+                return $.grep(todos, function(item){
+                    return !item.complete;
+                });
+            },
+        },
+
+        /**
+         * Set active filter to a function based on the hash,
+         * falling back to all.
+         *
+         * This determines the subset of items that render.
+         */
+        setActiveFilter: function() {
+            var key = window.location.hash.split("/")[1];
+            this.activeFilter = this.filters[key] || this.filters.all;
+        },
+        
         /**
          * Given any element, climb the tree
          * until you find the todo's id, and look
@@ -151,8 +188,9 @@
 
         render: function() {
             var html = nunjucks.render("components/todolist.njk", {
-                items: this.data.todos,
+                items: this.activeFilter(this.data.todos),
                 input: this.data.input || "",
+                count: this.filters.active(this.data.todos).length,
             });
             lazyRender(this.$app[0], html);
         },

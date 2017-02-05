@@ -12,6 +12,7 @@ def todos(request):
    
     return render(request, "index.njk", {
         "items": items,
+        "count": len([item for item in items if not item["complete"]]),
         "data": json.dumps({
             "todos": items
         }, indent=2),
