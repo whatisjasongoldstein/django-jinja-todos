@@ -1,3 +1,4 @@
 django==1.10.5
 jinja2==2.9.5
 marshmallow==2.12.2
+django-jinja==2.2.2
