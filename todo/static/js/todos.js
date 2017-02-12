@@ -37,6 +37,11 @@
 
 (function(window, document, $){
 
+    /**
+     * Given an element and the html
+     * it should become, apply morphdom
+     * to make the incremental DOM changes.
+     */
     function lazyRender(el, html) {
         let cloneEl = el.cloneNode();
         cloneEl.innerHTML = html;
@@ -82,6 +87,11 @@
              */
             this.$app.on("click", ".view label", function(){
                 var $item = $(this).closest(".todo-item")
+
+                // This breaks the "don't" touch
+                // the DOM rule, but seems more elegant
+                // than storing which item 
+                // is being edited in state.
                 $item.addClass("editing");
                 var $input = $item.find(".edit");
 
@@ -89,6 +99,9 @@
                 $input.val($input.val()).focus();
             });
 
+            /**
+             * Deselect a TODO, save the change.
+             */
             this.$app.on("blur", ".edit", function() {
                 var todo = self.getTodoFromElement(this);
                 if (this.value !== todo.name) {
@@ -100,6 +113,9 @@
                 }
             });
 
+            /**
+             * Handle todo complete
+             **/
             this.$app.on("change", ".js-complete", function(){
                 var todo = self.getTodoFromElement(this);
                 todo.complete = this.checked;
@@ -107,6 +123,10 @@
                 self.render();
             });
 
+            /**
+             * Handle escape and enter
+             * when a todo is elected.
+             */
             this.$app.on("keyup", ".new-todo", function(e){
                 if (e.keyCode === KEYCODES.ENTER && this.value !== "") {
                     var newTodoName = this.value;
@@ -120,6 +140,9 @@
                 self.data.input = this.value;
             });
 
+            /**
+             * Handle delete todo.
+             */
             this.$app.on("click", ".destroy", function(e){
                 var todo = self.getTodoFromElement(this);
                 if (todo) {
@@ -128,6 +151,9 @@
                 e.preventDefault();
             });
 
+            /**
+             * Delete all completed todos.
+             */
             this.$app.on("click", ".clear-completed", function(e){
                 var todos = self.filters.completed(self.data.todos);
                 if (todos.length) {
@@ -136,6 +162,9 @@
                 e.preventDefault();
             });
 
+            // Update the filter when the hash changes.
+            // In real life, I'd rather use url's, but
+            // this is how the other TODOMVC examples work.
             $(window).on("hashchange", self.setFilter.bind(self));
         },
 
@@ -171,6 +200,9 @@
             this.render();
         },
         
+        /**
+         * Given a uuid, return a todo from the list.
+         */
         getTodoById: function(uuid) {
             var results = this.data.todos.filter(function(item) {
                 return item.uuid === uuid;
@@ -191,6 +223,10 @@
             return this.getTodoById(uuid);
         },
 
+        /**
+         * Create a new todo, add to the list
+         * and save to the server.
+         */
         addTodo: function(name) {
             var todo = {
                 uuid: uuid(),
@@ -202,6 +238,10 @@
             this.render()
         },
 
+        /**
+         * Delete a list of todos
+         * from the server.
+         */
         removeTodos: function(todos) {
             var uuids = todos.map(function(todo){
                 return todo.uuid
@@ -215,12 +255,19 @@
             });
         },
 
+        /**
+         * Create or update a todo on the server.
+         */
         saveTodo: function(todo) {
             $.post("/endpoint/", {
                 todo: JSON.stringify(todo)
             });
         },
 
+        /**
+         * Render the component using the nunjuck's
+         * template and a context build from the current state.
+         */
         render: function() {
             var html = nunjucks.render("components/todolist.njk", {
                 items: this.activeFilter(this.data.todos),

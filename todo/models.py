@@ -5,7 +5,7 @@ from django.db import models
 
 
 class ItemQuerySet(models.QuerySet):
-
+    
     def serialized(self):
         item_schema = ItemSchema()
         return item_schema.dump(self.filter(), many=True).data

@@ -14,7 +14,9 @@ def todos(request):
         "items": items,
         "count": len([item for item in items if not item["complete"]]),
         "data": json.dumps({
-            "todos": items
+            "todos": items  # Anything used in state needs to be 
+                            # available in JSON somewhere
+                            # on the page.
         }, indent=2),
     })
 
@@ -22,7 +24,7 @@ def todos(request):
 @login_required
 def endpoint(request):
     """
-    Garbage code. TODO.
+    Garbage code. TODO Refactor.
     """
 
     # Delete

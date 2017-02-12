@@ -4,6 +4,26 @@ Can I make Django do the same using Nunjucks+Jinja2?
 
 Let's start small, TODOMVC style.
 
+## Goals
+
+- Rarely or never manipulate the DOM manually. Use [morphdom](https://github.com/patrick-steele-idem/morphdom) and templates to change DOM based on state.
+- Avoid rendering everything in the client, as this is rude to underpowered devices and opens a can of a11y and SEO worms.
+- Introduce as few new ideas as possible.
+- Make the integration between the frontend and a Python backend obvious and straightforward.
+
+## Setup
+
+```
+pip install -r requirements
+npm install
+bower install  # Keeping the 3 browser deps separate from 500 gulp deps
+gulp
+./manage.py collectstatic -l
+./manage.py migrate
+./manage.py createsuperuser  # You'll need to login as someone
+gulp dev
+```
+
 ## Progress
 
 - [x] Serializing baked into models
@@ -17,6 +37,7 @@ Let's start small, TODOMVC style.
 - [ ] Minimize (and document) boilerplate
 - [ ] A second app scope?
 - [ ] A yeoman or cookiecutter starter kit
+- [ ] Tinker with Marshmallow vs DRF for serialization
 
 ## Notes
 
