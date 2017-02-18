@@ -2,7 +2,7 @@ React can use the same component templates that render on both serverside and in
 
 Can I make Django do the same using Nunjucks+Jinja2?
 
-Let's start small, TODOMVC style.
+Let's start small, [TODOMVC](http://todomvc.com/) style. This way we can compare the front-end code to the alternatives for brevity and clarity.
 
 ## Goals
 
