@@ -10,6 +10,7 @@ Let's start small, [TODOMVC](http://todomvc.com/) style. This way we can compare
 - Avoid rendering everything in the client, as this is rude to underpowered devices and opens a can of a11y and SEO worms.
 - Introduce as few new ideas as possible.
 - Make the integration between the frontend and a Python backend obvious and straightforward.
+- Compare the results in the front end to other ToDoMVC examples for brevity and clarity.
 
 ## Setup
 
