@@ -17,6 +17,7 @@ Let's start small, [TODOMVC](http://todomvc.com/) style. This way we can compare
 ```
 pip install -r requirements
 npm install
+npm install -g bower
 bower install  # Keeping the 3 browser deps separate from 500 gulp deps
 gulp
 ./manage.py collectstatic -l
